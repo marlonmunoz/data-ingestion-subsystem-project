@@ -42,7 +42,7 @@ def create_tables():
         location_id VARCHAR(20),
         region_id INTEGER,
         ada_accessible VARCHAR(50),
-        ansi_usable VARCHAR(50)
+        ansi_usable VARCHAR(50),
         city VARCHAR(100),
         county VARCHAR(100),
         address_line1 VARCHAR(200),
@@ -83,10 +83,9 @@ def create_tables():
     finally:
         if connection:
             cursor.close()
-            connection.close()
+            connection.close()    
     
-    
-    if __name__=="main":
+    if __name__== "__main__":
         logging.basicConfig(level=logging.INFO)
         create_tables()
         
