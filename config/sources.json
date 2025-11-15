@@ -1,0 +1,38 @@
+{
+  "defaults": {
+    "db_url": "postgresql://postgres:password@localhost:5432/real_estate_db",
+    "batch_size": 5000,
+    "on_conflict": "upsert"
+  },
+  "sources": [
+    {
+      "name": "real_estate_csv",
+      "type": "csv",
+      "path": "data/real_estate.csv",
+      "target_table": "stg_real_estate",
+      "pk": ["location_id"],
+      "schema": {
+        "data_date": "date",
+        "ownership_type": "str",
+        "parking_spaces": "int",
+        "status": "str",
+        "property_type": "str",
+        "congressional_district": "int",
+        "location_id": "str",
+        "region_id": "int",
+        "ada_accessible": "str",
+        "ansi_usable": "str",
+        "city": "str",
+        "county": "str",
+        "address_line1": "str",
+        "state": "str",
+        "zip_code": "str"
+      },
+      "rules": [
+        {"rule": "parking_spaces >= 0"},
+        {"rule": "data_date NOT NULL"},
+        {"rule": "len(city) > 0"}
+      ]
+    }
+  ]
+}
