@@ -13,7 +13,7 @@ def get_db_connection():
     try:
         connection = psycopg2.connect(
             host=os.getenv('DB_HOST', 'localhost'),
-            database=os.getenv('DB_NAME', 'real_state_db'),
+            database=os.getenv('DB_NAME', 'real_estate_db'),
             user=os.getenv('DB_USER', 'postgres'),
             password=os.getenv('DB_PASSWORD', 'password'),
             port=os.getenv('DB_PORT', '5432')
@@ -42,6 +42,7 @@ def create_tables():
         location_id VARCHAR(20),
         region_id INTEGER,
         ada_accessible VARCHAR(50),
+        ansi_usable VARCHAR(50)
         city VARCHAR(100),
         county VARCHAR(100),
         address_line1 VARCHAR(200),
@@ -53,5 +54,39 @@ def create_tables():
     """
     
     # Reject tables for invalid records
+    rejects_table_sql = """
+    CREATE TABLE IF NOT EXISTS stg_rejects (
+        id SERIAL PRIMARY KEY,
+        source_name VARCHAR(100) NOT NULL,
+        raw_data JSONB NOT NULL,
+        rejection_reason TEXT NOT NULL,
+        rejected_at TIMESTAMP DEFAULT NOW()
+    );
+    """
+    
+    connection = None
+    try:
+        connection = get_db_connection()
+        cursor = connection.cursor()
+        
+        # Execute table creation
+        cursor.execute(real_estate_table_sql)
+        cursor.execute(rejects_table_sql)
+        
+        connection.commit()
+        logging.info("Tables created successfully")
+    except Exception as e:
+        if connection:
+            connection.rollback()
+        logging.error(f"Table creation failed: {e}")
+        raise
+    finally:
+        if connection:
+            cursor.close()
+            connection.close()
     
     
+    if __name__=="main":
+        logging.basicConfig(level=logging.INFO)
+        create_tables()
+        
