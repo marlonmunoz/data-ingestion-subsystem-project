@@ -13,7 +13,7 @@ def get_db_connection():
     try:
         connection = psycopg2.connect(
             host=os.getenv('DB_HOST', 'localhost'),
-            databasr=os.getenv('DB_NAME', 'real_state_db'),
+            database=os.getenv('DB_NAME', 'real_state_db'),
             user=os.getenv('DB_USER', 'postgres'),
             password=os.getenv('DB_PASSWORD', 'password'),
             port=os.getenv('DB_PORT', '5432')
@@ -23,3 +23,35 @@ def get_db_connection():
     except Exception as e:
         logging.error(f'Database connection failed: {e}')
         raise
+    
+# SQL Table
+def create_tables():
+    """
+    Create the staging tables for real estate data and rejects
+    """
+    # This will be my main real estate table 
+    real_estate_table_sql = """
+    CREATE TABLE IF NOT EXISTS stg_real_estate (
+        id SERIAL PRIMARY KEY,
+        data_date DATE,
+        ownership_type VARCHAR(20),  -- 'OWNED' or 'LEASED'
+        parking_spaces INTEGER, 
+        status VARCHAR(20),
+        property_type VARCHAR(50),
+        congressional_district INTEGER,
+        location_id VARCHAR(20),
+        region_id INTEGER,
+        ada_accessible VARCHAR(50),
+        city VARCHAR(100),
+        county VARCHAR(100),
+        address_line1 VARCHAR(200),
+        state VARCHAR(5),
+        zip_code VARCHAR(15),
+        created_at TIMESTAMP DEFAULT NOW(),
+        UNIQUE(location_id)  -- Prevent duplicate properties
+    );
+    """
+    
+    # Reject tables for invalid records
+    
+    
