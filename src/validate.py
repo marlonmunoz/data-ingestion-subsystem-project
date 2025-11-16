@@ -45,3 +45,9 @@ def drop_missing(df, required_fields):
     Drop rows with missing values in any of the required fields
     """
     return df.dropna(subset=required_fields)
+
+def apply_rules(df, rules):
+    """
+    Apply business rules to the DataFramr and return valid and rejected rows.
+    """
+    valid_mask = pd.Series([True] * len(df))
