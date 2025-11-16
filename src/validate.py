@@ -8,7 +8,7 @@ def rename_columns(df, schema):
         "data.parking spaces": "parking_spaces",
         "data.status": "status",
         "data.type": "property_type",
-        "location.congressional district": "congressional_distric",
+        "location.congressional district": "congressional_district",
         "location.id": "location_id",
         "location.region id": "region_id",
         "data.disabilities.ADA Accessible": "ada_accessible",
@@ -38,4 +38,10 @@ def cast_types(df, schema):
         elif dtype == "str":
             df[col] = df[col].astype(str)
     return df
+
             
+def drop_missing(df, required_fields):
+    """
+    Drop rows with missing values in any of the required fields
+    """
+    return df.dropna(subset=required_fields)
