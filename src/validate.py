@@ -50,4 +50,21 @@ def apply_rules(df, rules):
     """
     Apply business rules to the DataFramr and return valid and rejected rows.
     """
-    valid_mask = pd.Series([True] * len(df))
+    valid_mask = pd.Series([True] * len(df), index=df.index)
+    for rule in rules:
+        expr = rule["rule"]
+        if ">=" in expr:
+            col, _, val = expr.partition(">=")
+            col = col.strip()
+            valid_mask &= df[col].astype(float) >= float(val.strip())
+        elif "NOT NULL" in expr:
+            col = expr.replace("NOT NULL", "").strip()
+            valid_mask &= df[col].notnull()
+        elif "len(" in expr and ">" in expr:
+            col = expr.split("(")[1].split(")")[0]
+            val = expr.split(">")[-1].strip()
+            valid_mask &= df[col].astype(str).str.len() > int(val)
+        # Add more rule types as needed
+    valid_df = df[valid_mask]
+    rejected_df = df[~valid_mask]
+    return valid_df, rejected_df
