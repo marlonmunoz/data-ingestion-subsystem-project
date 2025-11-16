@@ -1,6 +1,7 @@
 import pandas as pd
 from config import load_config
 from validate import rename_columns, cast_types, drop_missing, apply_rules
+from clean import clean_whitespace, clean_casing
 
 config = load_config()
 source_cfg = config["sources"][0] # Get the first source config
@@ -13,9 +14,12 @@ df = rename_columns(df, source_cfg["schema"])
 df = cast_types(df, source_cfg["schema"])
 df = drop_missing(df, required_fields)
 valid_df, rejected_df = apply_rules(df, source_cfg["rules"])
+valid_df = clean_whitespace(valid_df)
+valid_df = clean_casing(valid_df)
 # print(df.head())
 # print(df.columns)
 # print(df.dtypes)
 # print(df.isnull().sum())
-print("Valid rows:", len(valid_df))
-print("Rejected rows:", len(rejected_df))
+# print("Valid rows:", len(valid_df))
+# print("Rejected rows:", len(rejected_df))
+print(valid_df.head())  # See cleaned data
