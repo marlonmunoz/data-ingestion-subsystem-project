@@ -83,9 +83,45 @@ def create_tables():
     finally:
         if connection:
             cursor.close()
-            connection.close()    
+            connection.close()  
+        
+def load_to_db(df, table_name, connection):
+    """
+    Load DataFrame rows into the specified PostgreSQL table using UPSERT
+    """
+    cursor = connection.cursor()
+    for _, row in df.iterrows():
+        sql = f"""
+        INSERT INTO {table_name} (
+            data_date, ownership_type, parking_spaces, status, property_type,
+            congressional_district, location_id, region_id, ada_accessible, ansi_usable,
+            city, county, address_line1, state, zip_code, created_at
+        ) VALUES (
+            %(data_date)s, %(ownership_type)s, %(parking_spaces)s, %(status)s, %(property_type)s,
+            %(congressional_district)s, %(location_id)s, %(region_id)s, %(ada_accessible)s, %(ansi_usable)s,
+            %(city)s, %(county)s, %(address_line1)s, %(state)s, %(zip_code)s, NOW()
+        )
+        ON CONFLICT (location_id) DO UPDATE SET
+            data_date = EXCLUDED.data_date,
+            ownership_type = EXCLUDED.ownership_type,
+            parking_spaces = EXCLUDED.parking_spaces,
+            status = EXCLUDED.status,
+            property_type = EXCLUDED.property_type,
+            congressional_district = EXCLUDED.congressional_district,
+            region_id = EXCLUDED.region_id,
+            ada_accessible = EXCLUDED.ada_accessible,
+            ansi_usable =  EXCLUDED.ansi_usable,
+            county = EXCLUDED.county,
+            address_line1 = EXCLUDED.address_line1,
+            state = EXCLUDED.state,
+            zip_code = EXCLUDED.zip_code,
+            created_at = NOW();
+        """
+        cursor.execute(sql, row.to_dict())
+    connection.commit()
+    cursor.close()
     
-    if __name__== "__main__":
-        logging.basicConfig(level=logging.INFO)
-        create_tables()
+if __name__== "__main__":
+    logging.basicConfig(level=logging.INFO)
+    create_tables()
         
