@@ -336,3 +336,10 @@ It simulates real-world ingestion pipelines — combining:
 * **Logging and testing** for maintainability and observability.
 
 By completing this project, we will gain a full picture of how **raw data becomes trustworthy, query-ready data**, setting them up for real data engineering, analytics, and cloud-based ELT systems.
+
+
+## Activate Virtual .vene
+`source .venv/bin/activate`
+
+## Deactivate
+`deactivate`
