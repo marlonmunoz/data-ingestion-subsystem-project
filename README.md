@@ -348,3 +348,6 @@ By completing this project, we will gain a full picture of how **raw data become
 ## ETL STEPS
 1. parse json configuration
 2. read with pandas
+  - Rows = Records/observations
+  - Columns = Fields/attributes
+  - Index = Row numbers (0, 1, 2...)
