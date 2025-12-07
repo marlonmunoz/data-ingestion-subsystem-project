@@ -351,3 +351,7 @@ By completing this project, we will gain a full picture of how **raw data become
   - Rows = Records/observations
   - Columns = Fields/attributes
   - Index = Row numbers (0, 1, 2...)
+3. clean data
+  - rename_column
+  - strip_whitepacas
+  - handle_missing_values
