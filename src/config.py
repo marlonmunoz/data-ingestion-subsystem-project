@@ -28,3 +28,8 @@ if __name__=="__main__":
     print(f"Database URL: {config['defaults']['db_url']}")
     print(f"Number of sources: {len(config['sources'])}")
     print(f"Source name: {config['sources'][0]['name']}")
+
+
+'''loads the JSON configuration file and returns it as a Python 
+dictionary so the pipeline knows where to find data and how to 
+process it.'''

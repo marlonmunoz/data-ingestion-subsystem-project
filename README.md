@@ -343,3 +343,8 @@ By completing this project, we will gain a full picture of how **raw data become
 
 ## Deactivate
 `deactivate`
+
+
+## ETL STEPS
+1. parse json configuration
+2. read with pandas
