@@ -8,15 +8,18 @@ This separates configuration from code, makind our pipelines flexible -
 we can change settings without modifying the code itlsef.
 '''
 
-import json
-import os
+import json # needed to convert JSON into Python Dictionary
+import os # needed to check if config file exists before tryin to open it
+
 
 def load_config(config_path="config/sources.json"):
-    if not os.path.exists(config_path):
-        raise FileNotFoundError(f"Config file not found: {config_path}")
+    if not os.path.exists(config_path): # here we're checking weather the file exist at that path
+        raise FileNotFoundError(f"Config file not found: {config_path}") # raise an exception that prevents 
+                                                                         # opening a file that doesn't exist
     
-    with open(config_path, 'r') as f:
-        config = json.load(f)
+    # Using conetext manager: WITH to autimatically close the file when done even if error ocurrs
+    with open(config_path, 'r') as the_file: # opens the file for reading in reading mode
+        config = json.load(the_file) # converts JSON into a Python Dictionary
         return config
 
 if __name__=="__main__":
