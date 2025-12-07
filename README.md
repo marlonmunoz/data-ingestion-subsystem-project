@@ -338,7 +338,7 @@ It simulates real-world ingestion pipelines — combining:
 By completing this project, we will gain a full picture of how **raw data becomes trustworthy, query-ready data**, setting them up for real data engineering, analytics, and cloud-based ELT systems.
 
 
-## Activate Virtual .vene
+## Activate Virtual .venv
 `source .venv/bin/activate`
 
 ## Deactivate
@@ -346,12 +346,16 @@ By completing this project, we will gain a full picture of how **raw data become
 
 
 ## ETL STEPS
-1. parse json configuration
-2. read with pandas
+1. [`config.py`]: parse json configuration 
+
+2. [`csv_read.py`]: read with pandas 
   - Rows = Records/observations
   - Columns = Fields/attributes
   - Index = Row numbers (0, 1, 2...)
-3. clean data
+
+3. [`clean.py`]: clean data 
   - rename_column
   - strip_whitepacas
   - handle_missing_values
+
+4. [`validate.py`]: data validation 
