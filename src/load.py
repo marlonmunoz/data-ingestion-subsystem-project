@@ -149,4 +149,6 @@ def load_rejected(conn, rejected_df, source_name):
         raise
     finally:
         cursor.close()
+        
+        # testing
 
