@@ -370,3 +370,4 @@ By completing this project, we will gain a full picture of how **raw data become
 - Step 5: rules.py    ✅............. → Orchestrate all validations
 - Step 6: load.py     ✅............ → Connected and load valid data into psql
 - Step 7: main.py     ✅............. → Orchetrator that ties everything together
+- Step 8: testing 
