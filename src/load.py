@@ -119,6 +119,34 @@ def load_to_staging(conn, df, table_name, pk_column, batch_size=1000):
 
 # Function 04: Load rejected records with reasons
 def load_rejected(conn, rejected_df, source_name):
-    pass
-# my commits are not working
+    if len(rejected_df) == 0:
+        print("No rejecet records to load")
+        return 0
+    
+    cursor = conn.cursor()
+    
+    insert_query = """
+        INSERT INTO stg_rejects (source_name, raw_data, rejection_reason)
+        VALUES (%s, %s, %s)
+    """
+    
+    try: 
+        for _, row in rejected_df.iterrows():
+            row_dict = row.drop('rejection_reason').to_dict()
+            raw_data_json = json.dumps(row_dict, default=str)
+            
+            cursor.execute(insert_query, (
+                source_name,
+                raw_data_json,
+                row['rejection_reason']
+            ))
+        conn.commit()
+        print(f"Loaded {len(rejected_df)} rejected to stg_rejects")
+        return len(rejected_df)
+    except Exception as e:
+        conn.rollback()
+        print(f"Error Loading rejects: {e}")
+        raise
+    finally:
+        cursor.close()
 
