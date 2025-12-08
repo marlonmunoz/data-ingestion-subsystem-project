@@ -105,5 +105,8 @@ if __name__=="__main__":
         
     
     
-    
+'''rules.py orchestrates all validation functions 
+(required fields, numeric ranges, deduplication) into 
+a single function call that returns clean valid data 
+and tracked rejected records.'''
     
