@@ -162,13 +162,3 @@ any records that fail validation.'''
     
     
     
-    
-    
-    
-    
-    
-def validate_numeric_ranges(df):
-    pass
-
-def split_valid_invalid(df, valid_mask, reason):
-    pass

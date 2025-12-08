@@ -59,6 +59,20 @@ def handle_missing_values(df):
     print(f"✅ Handled missing values")
     return df
 
+# Function 03
+
+def convert_date_format(df):
+    if 'data_date' in df.columns:
+        df['data_date'] = pd.to_datetime(
+            df['data_date'],
+            errors='coerce'
+        )
+        
+        null_count = df['data_date'].isna().sum()
+        valid_count = df['data_date'].notna().sum()
+        print(f"✅ Coverted data_date format: {valid_count} valid, {null_count} null")
+    return df
+
 if __name__=="__main__":
     # Import the CSV reader
     import sys
@@ -100,11 +114,17 @@ if __name__=="__main__":
     print("="*60)
     df = handle_missing_values(df)
     
+    # 6. Convert date format
+    print("\n" + "="*60)
+    print("STEP 5: Convert date format")
+    print("="*60)
+    df = convert_date_format(df)
+    
     # 6 Show final cleaned data
     print("\n" + "="*60)
     print("STEP 1: FINAL CLEANED DATA - First 5 Rows:")
     print("="*60)
-    print(df.head(5))
+    print(df.head(15))
     
     print("\n" + "="*60)
     print("COLUMN DATA TYPES")
@@ -116,7 +136,47 @@ if __name__=="__main__":
     print("="*60)
     print(f"✅ Total rows: {len(df)}")
     print(f"✅ Total columns: {len(df.columns)}")
-    print(f"✅ Null values in dat_date: {df['data_date'].isna().sum()} ")
+    print(f"✅ Null values in data_date: {df['data_date'].isna().sum()} ")
+    
+    # # INSPECT RAW DATA (Before any cleaning)
+    # pd.set_option('display.max_columns', None)
+    # pd.set_option('display.width', None)
+    # pd.set_option('display.max_colwidth', 50)
+    
+    # print("\n" + "="*80)
+    # print("RAW DATA - FIRST 50 ROWS (NO CLEANING YET):")
+    # print("="*80)
+    # print(df.head(50))
+    
+    # print("\n" + "="*80)
+    # print("RAW DATA - NULL VALUES PER COLUMN:")
+    # print("="*80)
+    # print(df.isnull().sum())
+    
+    # # Display ALL columns without truncation
+    # pd.set_option('display.max_columns', None)
+    # pd.set_option('display.width', None)
+    # pd.set_option('display.max_colwidth', 50)
+    
+    # print("\n" + "="*80)
+    # print("FIRST 5 ROWS WITH ALL COLUMNS (FULL INSPECTION):")
+    # print("="*80)
+    # print(df.head(50))
+    
+    
+    # Check for any remaining data quality issues
+    print("\n" + "="*80)
+    print("DATA QUALITY CHECK:")
+    print("="*80)
+    print(f"Total NULL values per column:")
+    print(df.isnull().sum())
+    
+    print("\n" + "="*80)
+    print("UNIQUE VALUES IN KEY COLUMNS:")
+    print("="*80)
+    print(f"Unique statuses: {df['status'].unique()}")
+    print(f"Unique ownership types: {df['ownership_type'].unique()}")
+    print(f"Unique states: {df['state'].unique()}")
     
     
 '''clean.py transforms messy CSV column names into clean 

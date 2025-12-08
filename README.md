@@ -355,7 +355,7 @@ By completing this project, we will gain a full picture of how **raw data become
 
 3. [`clean.py`]: clean data 
   - rename_column
-  - strip_whitepacas
+  - strip_whitespaces
   - handle_missing_values
 
 4. [`validate.py`]: data validation 
@@ -363,7 +363,8 @@ By completing this project, we will gain a full picture of how **raw data become
 
 
 
-- Step 1: config.py ✅............ → Load configuration
-- Step 2: csv_read.py ✅.......... → Read CSV into DataFrame
-- Step 3: clean.py ✅............. → Clean columns and values
-- Step 4: validate.py ✅.......... → Validate data quality
+- Step 1: config.py   ✅............. → Load configuration
+- Step 2: csv_read.py ✅............. → Read CSV into DataFrame
+- Step 3: clean.py    ✅............. → Clean columns and values
+- Step 4: validate.py ✅............. → Validate data quality
+- Step 5: rules.py    ✅............. → Orchestrate all validations
