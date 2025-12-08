@@ -368,3 +368,5 @@ By completing this project, we will gain a full picture of how **raw data become
 - Step 3: clean.py    ✅............. → Clean columns and values
 - Step 4: validate.py ✅............. → Validate data quality
 - Step 5: rules.py    ✅............. → Orchestrate all validations
+- Step 6: load.py     ✅............ → Connected and load valid data into psql
+- Step 7: main.py     ✅............. → Orchetrator that ties everything together
