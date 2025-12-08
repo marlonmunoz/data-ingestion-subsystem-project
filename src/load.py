@@ -59,7 +59,13 @@ def create_tables(conn):
 
 # Function 02: Establish connection to PostgreSQL
 def get_db_connection(db_url):
-    pass
+    try:
+        conn = psycopg2.connect(db_url)
+        print("Connected to database successfully")
+        return conn
+    except Exception as e:
+        print(f"Database connection failed: {e}")
+        raise
 
 # Function 03: Load valid data using UPSERT
 def load_to_staging(conn, df, table_name, pk_column, batch_size=1000):
