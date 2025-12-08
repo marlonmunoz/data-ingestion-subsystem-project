@@ -69,7 +69,53 @@ def get_db_connection(db_url):
 
 # Function 03: Load valid data using UPSERT
 def load_to_staging(conn, df, table_name, pk_column, batch_size=1000):
-    pass
+    cursor = conn.cursor()
+    columns = df.columns.tolist()
+    
+    placeholders = ', '.join(['%s'] * len(columns))
+    columns_str = ', '.join(columns)
+    
+    update_cols = [col for col in columns if col != pk_column]
+    update_str = ', '.join([f"{col} = EXCLUDED.{col}" for col in update_cols])
+    
+    upsert_query = f"""
+        INSERT INTO {table_name} ({columns_str})
+        VLAUES ({placeholders})
+        ON CONFLICT ({pk_column}) DO UPDATE SET
+        {update_str}
+    """
+    
+    try: 
+        total_rows = 0
+        
+        for i in range(0, len(df), batch_size):
+            batch = df.iloc[i:i+batch_size]
+            
+            for _, row in batch.iterrows():
+                
+                values = []
+                for col in columns:
+                    val = row[col]
+                    
+                    if pd.isna(val):
+                        values.append(None)
+                    else:
+                        values.append(val)
+                cursor.execute(upsert_query, values)
+                total_rows += 1
+            conn.commit()
+            print(f" Loaded batch: {min(i+batch_size, len(df))}")
+        
+        print(f"Successfully loaded {total_rows} rows to {table_name}")
+        return total_rows
+    
+    except Exception as e:
+        conn.rollback()
+        print(f"Error loading data: {e}")
+        raise
+    finally:
+        cursor.close()
+        
 
 # Function 04: Load rejected records with reasons
 def load_rejected(conn, rejected_df, source_name):
