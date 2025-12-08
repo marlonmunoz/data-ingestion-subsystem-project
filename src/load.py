@@ -120,4 +120,5 @@ def load_to_staging(conn, df, table_name, pk_column, batch_size=1000):
 # Function 04: Load rejected records with reasons
 def load_rejected(conn, rejected_df, source_name):
     pass
+# my commits are not working
 
