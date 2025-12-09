@@ -74,6 +74,32 @@ class TestValidRequiredFields:
         assert len(valid) == 0
         assert len(rejected) == 0
         
+    def test_empty_string_city(self):
+        df = pd.DataFrame({
+            'location_id': ['CT001', 'CT002', 'CT003'],
+            'city': ['Hartford', '', '   '],  # Empty and whitespace-only
+            'state': ['CT', 'CT', 'CT']
+        })
+        
+        valid, rejected = validate_required_fields(df)
+        
+        assert len(valid) == 1
+        assert len(rejected) == 2
+        assert 'Missing or empty city' in rejected['rejection_reason'].values
+        
+    def test_empty_string_state(self):
+        df = pd.DataFrame({
+            'location_id': ['CT001', 'CT002'],
+            'city': ['Hartford', 'Boston'],
+            'state': ['CT', '']    
+        })
+        
+        valid, rejected = validate_required_fields(df)
+        
+        assert len(valid) == 1
+        assert len(rejected) == 1
+        assert rejected.iloc[0]['rejection_reason'] == 'Missing or empty state'
+        
         
 class TestValidateNumericRanges:
     

@@ -152,7 +152,7 @@ def load_rejected(conn, rejected_df, source_name):
         
 
 # TEST
-if __name__=="__main__":
+if __name__=="__main__": # pragma: no cover
     import sys
     import os
     

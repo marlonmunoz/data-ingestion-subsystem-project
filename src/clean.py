@@ -73,7 +73,7 @@ def convert_date_format(df):
         print(f"✅ Coverted data_date format: {valid_count} valid, {null_count} null")
     return df
 
-if __name__=="__main__":
+if __name__=="__main__": # pragma: no cover
     # Import the CSV reader
     import sys
     import os

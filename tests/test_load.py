@@ -246,5 +246,48 @@ class TestDatabaseIntegration:
         
         assert rows_loaded == 3
         assert mock_conn.commit.call_count >= 2
+
+class TestErrorHandling:
+    
+    def test_get_db_connection_invalid_url(self):
+        invalid_db_url = "postgresql://baduser:badpass@localhost:9999/nonexistent"
+        
+        with pytest.raises(Exception):
+            get_db_connection(invalid_db_url)
+            
+    def test_create_table_rollback_on_error(self, mock_db_connection):
+        
+        conn, cursor = mock_db_connection
+        
+        cursor.execute.side_effect = Exception("SQL Error")
+        
+        with pytest.raises(Exception):
+            create_tables(conn)
+            
+        conn.rollback.assert_called_once()
+        cursor.close.assert_called_once()
+        
+    def test_load_to_staging_rollback_on_error(self, mock_db_connection, sample_valid_data):
+        conn, cursor = mock_db_connection
+        cursor.execute.side_effect = Exception("Insert failed")
+        
+        with pytest.raises(Exception):
+            load_to_staging(conn, sample_valid_data, 'stg_real_estate', 'location_id')
+            
+            conn.rollback.assert_called()
+            cursor.close.assert_called()
+            
+                       
+    def test_load_rejected_rollback_or_error(self, mock_db_connection, sample_rejected_data):
+        
+        conn, cursor = mock_db_connection
+        cursor.execute.side_effect = Exception("Insert rejected failed")
+        
+        with pytest.raises(Exception):
+            load_rejected(conn, sample_rejected_data, 'test_source')
+            
+            conn.rollback.assert_called()
+            cursor.close.assert_called()
+            
         
     

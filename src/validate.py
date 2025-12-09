@@ -80,7 +80,7 @@ def remove_duplicates(df, primary_key):
 
 
 # TEST
-if __name__=="__main__":
+if __name__=="__main__": # pragma: no cover
     import sys
     import os
     
