@@ -90,7 +90,7 @@ def run_pipeline(config_path="config/sources.json"):
         print(f"Error: {str(e)}")
         sys.exit(1)
 
-if __name__=="__main__":
+if __name__=="__main__": # pragma: no cover
     run_pipeline()
         
         

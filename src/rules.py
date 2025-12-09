@@ -55,7 +55,7 @@ def apply_all_validations(df, primary_key='location_id'):
 
 
 # TEST 
-if __name__=="__main__":
+if __name__=="__main__": # pragma: no cover
     import sys
     import os
     

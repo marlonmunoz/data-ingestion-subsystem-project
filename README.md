@@ -363,12 +363,12 @@ By completing this project, we will gain a full picture of how **raw data become
 
 
 
-- Step 1: config.py   ✅............. → Load configuration
+- Step 1: config.py   ✅............. → Load configuration 
 - Step 2: csv_read.py ✅............. → Read CSV into DataFrame
-- Step 3: clean.py    ✅............. → Clean columns and values
-- Step 4: validate.py ✅............. → Validate data quality
+- Step 3: clean.py    ✅............. → Clean columns and values (T)
+- Step 4: validate.py ✅............. → Validate data quality (T)
 - Step 5: rules.py    ✅............. → Orchestrate all validations
-- Step 6: load.py     ✅............ → Connected and load valid data into psql
+- Step 6: load.py     ✅............ → Connected and load valid data into psql (T)
 - Step 7: main.py     ✅............. → Orchetrator that ties everything together
 - Step 8: testing 
 
@@ -376,26 +376,26 @@ By completing this project, we will gain a full picture of how **raw data become
 
 ## PYTEST
 
-# Run all tests in current directory and subdirectories
-pytest
+#### Run all tests in current directory and subdirectories
+`pytest`
 
-# Run tests in a specific file
-pytest test_file.py
+#### Run tests in a specific file
+`pytest test_file.py`
 
-# Run a specific test function
-pytest test_file.py::test_function_name
+#### Run a specific test function
+`pytest test_file.py::test_function_name`
 
-# Run tests in a specific directory
-pytest tests/
+#### Run tests in a specific directory
+`pytest tests/`
 
-# Run with verbose output
-pytest -v
+#### Run with verbose output
+`pytest -v`
 
-# Run with output from print statements
-pytest -s
+#### Run with output from print statements
+`pytest -s`
 
-# Run and show coverage report
-pytest --cov
+#### Run and show coverage report
+`pytest --cov`
 
-# Run and stop at first failure
-pytest -x
+#### Run and stop at first failure
+`pytest -x`
