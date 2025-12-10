@@ -1,47 +1,150 @@
-# 🧱 The Data Ingestion Subsystem
+# 🧱 Data Ingestion Subsystem
 
-## Application Overview
+## Overview
 
-The **Data Ingestion Subsystem** is designed to collect and organize data from different sources into a unified, structured environment.
-It is a foundational component of modern data engineering pipelines, responsible for ensuring data is **accurate, clean, and reliable** before downstream analytics or machine learning use.
-
-This subsystem uses **Python** and **PostgreSQL** to read, validate, clean, and load data for later use in analytics or warehousing.
+A production-ready ETL pipeline that extracts real estate data from CSV, validates and cleans it, then loads it into PostgreSQL staging tables. Built with Python, pandas, and psycopg2, featuring comprehensive logging and 93% test coverage.
 
 ---
 
-## 🎯 Functional Goals
+## 🚀 Quick Start
 
-The system will:
+```bash
+# Install dependencies
+pip install -r requirements.txt
 
-* Read data from 1 or multiple sources — such as **CSV**, **JSON**, or simple **APIs**.
-* Validate that data conforms to the expected structure and format.
-* Clean and standardize the data (handle missing or invalid values).
-* Remove duplicates before insertion.
-* Load validated data into PostgreSQL staging tables.
-* Keep logs and reports for each ingestion run, including any rejected records.
-
----
-
-## 🧩 Core Functional Scope (User Stories)
-
-As a **data engineer**, I want to:
-
-1. Read data from different sources (CSV, JSON, API).
-2. Validate the data format and structure.
-3. Clean and standardize columns and values.
-4. Remove duplicate records based on primary keys.
-5. Load the cleaned data into PostgreSQL tables.
-6. Keep track of all rejected or invalid records for later inspection.
+# Run the pipeline
+python src/main.py
+```
 
 ---
 
-## 🗄️ Example Main Database Tables
+## 📊 Pipeline Flow
 
-| Table Name        | Purpose                                |
-| ----------------- | -------------------------------------- |
-| **stg_sales**     | Stores sales transaction data.         |
-| **stg_customers** | Stores customer details.               |
-| **stg_rejects**   | Stores records that failed validation. |
+```
+CSV Data → Extract → Clean → Validate → Load → PostgreSQL
+                                        ↓
+                                   Rejects Table
+```
+
+### 1️⃣ **Extract** (`csv_read.py`)
+- Reads CSV files using pandas
+- Loads 9,129 real estate property records
+- Logs data shape and column information
+
+### 2️⃣ **Clean** (`clean.py`)
+- Renames columns to snake_case
+- Strips whitespace from string fields
+- Handles missing values (fills or drops)
+- Converts date formats
+
+### 3️⃣ **Validate** (`validate.py`, `rules.py`)
+- Validates required fields (location_id, property_type, etc.)
+- Checks numeric ranges (parking_spaces ≥ 0)
+- Removes duplicate records by primary key
+- Tracks rejection reasons for invalid data
+
+### 4️⃣ **Load** (`load.py`)
+- Connects to PostgreSQL database
+- Creates staging tables (`stg_real_estate`, `stg_rejects`)
+- Performs UPSERT operations (INSERT with conflict handling)
+- Batch processing for performance (1000 rows/batch)
+- Logs rejected records as JSONB with error details
+
+---
+
+## 🗄️ Database Schema
+
+| Table | Purpose |
+|-------|---------|
+| **stg_real_estate** | Valid property records (15 columns) |
+| **stg_rejects** | Invalid records with rejection reasons |
+
+---
+
+## ✅ Testing
+
+```bash
+# Run all tests
+pytest
+
+# Run with coverage report
+pytest --cov=src --cov-report=term-missing
+```
+
+**Test Results:**
+- 48 tests passing
+- 93% code coverage
+- 100% coverage on core modules (clean, validate, rules, load, main)
+
+---
+
+## 📁 Project Structure
+
+```
+ingestion/
+├── config/
+│   └── sources.json          # Pipeline configuration
+├── data/
+│   └── real_estate.csv       # Source data (9,129 records)
+├── logs/
+│   └── utils.py              # Logger configuration
+├── src/
+│   ├── main.py               # ETL orchestrator
+│   ├── clean.py              # Data cleaning functions
+│   ├── validate.py           # Validation rules
+│   ├── rules.py              # Validation pipeline
+│   ├── load.py               # PostgreSQL loader
+│   ├── config.py             # Config loader
+│   └── readers/
+│       └── csv_read.py       # CSV reader
+└── tests/
+    ├── test_clean.py
+    ├── test_validate.py
+    ├── test_rules.py
+    ├── test_load.py
+    └── test_main.py
+```
+
+---
+
+## 🔧 Configuration
+
+Edit `config/sources.json` to customize:
+- Database connection URL
+- Source file paths
+- Target table names
+
+---
+
+## 📝 Logging
+
+All pipeline operations are logged to:
+- **Console**: Real-time progress updates
+- **File**: `logs/pipeline_YYYYMMDD.log`
+
+Log levels: INFO (success), ERROR (failures)
+
+---
+
+## 🎯 Key Features
+
+✅ Modular ETL design  
+✅ Comprehensive error handling  
+✅ UPSERT for idempotent loads  
+✅ Rejection tracking with detailed reasons  
+✅ Batch processing for large datasets  
+✅ 93% test coverage  
+✅ Production-ready logging  
+
+---
+
+## 🛠️ Technologies
+
+- **Python 3.11.9**
+- **pandas** - Data manipulation
+- **psycopg2** - PostgreSQL adapter
+- **pytest** - Testing framework
+- **PostgreSQL** - Data warehouse
 
 ---
 
@@ -345,23 +448,7 @@ By completing this project, we will gain a full picture of how **raw data become
 `deactivate`
 
 
-## ETL STEPS
-1. [`config.py`]: parse json configuration 
-
-2. [`csv_read.py`]: read with pandas 
-  - Rows = Records/observations
-  - Columns = Fields/attributes
-  - Index = Row numbers (0, 1, 2...)
-
-3. [`clean.py`]: clean data 
-  - rename_column
-  - strip_whitespaces
-  - handle_missing_values
-
-4. [`validate.py`]: data validation 
-
-
-
+## ETL STEPS FLOW
 
 - Step 1: config.py   ✅............. → Load configuration 
 - Step 2: csv_read.py ✅............. → Read CSV into DataFrame
@@ -374,7 +461,7 @@ By completing this project, we will gain a full picture of how **raw data become
 
 
 
-## PYTEST
+## PYTEST commands
 
 #### Run all tests in current directory and subdirectories
 `pytest`
