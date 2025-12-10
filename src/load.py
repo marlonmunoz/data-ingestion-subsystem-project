@@ -48,11 +48,43 @@ def create_tables(conn):
     );
     """
     
+    # VIEW: Expand JSONB rejected records into columns for easier querying
+    create_rejects_view = """
+    CREATE OR REPLACE VIEW v_rejects_expanded AS
+    SELECT 
+        id,
+        source_name,
+        rejection_reason,
+        rejected_at,
+        raw_data->>'location_id' AS location_id,
+        raw_data->>'city' AS city,
+        raw_data->>'state' AS state,
+        raw_data->>'county' AS county,
+        raw_data->>'address_line1' AS address_line1,
+        raw_data->>'zip_code' AS zip_code,
+        raw_data->>'data_date' AS data_date,
+        raw_data->>'property_type' AS property_type,
+        raw_data->>'ownership_type' AS ownership_type,
+        raw_data->>'status' AS status,
+        raw_data->>'parking_spaces' AS parking_spaces,
+        raw_data->>'ada_accessible' AS ada_accessible,
+        raw_data->>'congressional_district' AS congressional_district,
+        raw_data->>'region_id' AS region_id,
+        raw_data->>'ansi_usable' AS ansi_usable
+    FROM stg_rejects;
+    """
+    
+    grant_view_permissions = """
+    GRANT SELECT ON v_rejects_expanded TO PUBLIC;
+    """
+    
     try:
         cursor.execute(create_stg_real_estate)
         cursor.execute(create_stg_rejects)
+        cursor.execute(create_rejects_view)
+        cursor.execute(grant_view_permissions)
         conn.commit()
-        logger.info("✅ Tables created successfully (or already created)")
+        logger.info("✅ Tables and views created successfully (or already exist)")
     except Exception as e:
         conn.rollback()
         logger.error(f"❌ Error creating tables: {e}")
