@@ -2,21 +2,25 @@
 # You'll build this step by step!
 
 import sys
+import os
 from readers.csv_read import read_csv
 from clean import rename_columns, strip_whitespace, handle_missing_values, convert_date_format
 from rules import apply_all_validations
 from load import get_db_connection, create_tables, load_to_staging, load_rejected
-from  config import load_config
+from config import load_config
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
+from logs.utils import logger
 
 
 def run_pipeline(config_path="config/sources.json"):
     try: 
-        print("="*70)
-        print("START ETL PIPELINE")
-        print("="*70)
+        
+        logger.info("="*70)
+        logger.info("START ETL PIPELINE")
+        logger.info("="*70)
         
         # Load Config
-        print(("\n[1/5] Loading configuration..."))
+        logger.info("\n[1/5] Loading configuration...")
         config = load_config(config_path)
         source_config = config['sources'][0]
         defaults = config['defaults']
@@ -25,30 +29,30 @@ def run_pipeline(config_path="config/sources.json"):
         primary_key = source_config.get('primary_key', 'location_id')
         db_url = defaults['db_url']
         
-        print(f" Configuration loaded")
-        print(f" Source: {file_path}")
-        print(f" Database: {source_config['target_table']}")
+        logger.info(f" Configuration loaded")
+        logger.info(f" Source: {file_path}")
+        logger.info(f" Database: {source_config['target_table']}")
         
         # Extract
-        print("\n[2/5] Extracting Data...")
+        logger.info("\n[2/5] Extracting Data...")
         df = read_csv(file_path)
-        print(f" Extracted {len(df)} rows")
+        logger.info(f" Extracted {len(df)} rows")
         
         # Tranform - Clean Data
-        print("\n[3/5] Transform Data...")
+        logger.info("\n[3/5] Transform Data...")
         df = rename_columns(df)
         df = strip_whitespace(df)
         df = handle_missing_values(df)
         df = convert_date_format(df)
-        print(f" Cleaned {len(df)} rows")
+        logger.info(f" Cleaned {len(df)} rows")
         
         # Transfor - Valid Data
-        print("\n[4/5] Validating Data...")
+        logger.info("\n[4/5] Validating Data...")
         vaild_df, rejected_df = apply_all_validations(df, primary_key=primary_key)
-        print(f" Validating Complete: {len(vaild_df)} valid, {len(rejected_df)} rejected")
+        logger.info(f" Validating Complete: {len(vaild_df)} valid, {len(rejected_df)} rejected")
         
         # Load to Database
-        print("\n[5/5] Loading to database...")
+        logger.info("\n[5/5] Loading to database...")
         conn = get_db_connection(db_url)
         
         try:
@@ -69,25 +73,25 @@ def run_pipeline(config_path="config/sources.json"):
                 source_name=source_config['name']
             )
             
-            print(f" Loaded {valid_count} valid records")
-            print(f" Loaded {rejected_count} rejected records")
+            logger.info(f" Loaded {valid_count} valid records")
+            logger.info(f" Loaded {rejected_count} rejected records")
         finally:
             conn.close()
             
-        print("\n" + "="*70)
-        print("ETL PIPELINE COMPLETE ✅")
-        print("="*70)
-        print(f"Total records processed: {len(df)}")
-        print(f"Valid records laoded: {valid_count}")
-        print(f"Rejected records logged: {rejected_count}")
-        print(f"Success rate: {(valid_count/len(df)*100):.1f}%")
+        logger.info("\n" + "="*70)
+        logger.info("ETL PIPELINE COMPLETE ✅")
+        logger.info("="*70)
+        logger.info(f"Total records processed: {len(df)}")
+        logger.info(f"Valid records loaded: {valid_count}")
+        logger.info(f"Rejected records logged: {rejected_count}")
+        logger.info(f"Success rate: {(valid_count/len(df)*100):.1f}%")
         
         return valid_count, rejected_count
     except Exception as e:
-        print("\n" + "="*70)
-        print('PIPE LINE FAILED')
-        print("="*70)
-        print(f"Error: {str(e)}")
+        logger.error("\n" + "="*70)
+        logger.error('PIPELINE FAILED')
+        logger.error("="*70)
+        logger.error(f"Error: {str(e)}")
         sys.exit(1)
 
 if __name__=="__main__": # pragma: no cover
