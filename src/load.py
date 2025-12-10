@@ -5,6 +5,11 @@ import psycopg2
 import pandas as pd
 from psycopg2 import sql
 import json
+import sys
+import os
+
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
+from logs.utils import logger
 
 # Function 01: Create the database schema
 def create_tables(conn):
@@ -47,10 +52,10 @@ def create_tables(conn):
         cursor.execute(create_stg_real_estate)
         cursor.execute(create_stg_rejects)
         conn.commit()
-        print("✅ Tables created successfully (or already created)")
+        logger.info("✅ Tables created successfully (or already created)")
     except Exception as e:
         conn.rollback()
-        print(f"❌ Error creating tables: {e}")
+        logger.error(f"❌ Error creating tables: {e}")
         raise
     finally:
         cursor.close()
@@ -61,10 +66,10 @@ def create_tables(conn):
 def get_db_connection(db_url):
     try:
         conn = psycopg2.connect(db_url)
-        print("Connected to database successfully")
+        logger.info("Connected to database successfully")
         return conn
     except Exception as e:
-        print(f"Database connection failed: {e}")
+        logger.error(f"Database connection failed: {e}")
         raise
 
 # Function 03: Load valid data using UPSERT
@@ -104,14 +109,14 @@ def load_to_staging(conn, df, table_name, pk_column, batch_size=1000):
                 cursor.execute(upsert_query, values)
                 total_rows += 1
             conn.commit()
-            print(f" Loaded batch: {min(i+batch_size, len(df))}")
+            logger.info(f" Loaded batch: {min(i+batch_size, len(df))}")
         
-        print(f"Successfully loaded {total_rows} rows to {table_name}")
+        logger.info(f"Successfully loaded {total_rows} rows to {table_name}")
         return total_rows
     
     except Exception as e:
         conn.rollback()
-        print(f"Error loading data: {e}")
+        logger.error(f"Error loading data: {e}")
         raise
     finally:
         cursor.close()
@@ -120,7 +125,7 @@ def load_to_staging(conn, df, table_name, pk_column, batch_size=1000):
 # Function 04: Load rejected records with reasons
 def load_rejected(conn, rejected_df, source_name):
     if len(rejected_df) == 0:
-        print("No rejecet records to load")
+        logger.info("No rejecet records to load")
         return 0
     
     cursor = conn.cursor()
@@ -141,64 +146,64 @@ def load_rejected(conn, rejected_df, source_name):
                 row['rejection_reason']
             ))
         conn.commit()
-        print(f"Loaded {len(rejected_df)} rejected to stg_rejects")
+        logger.info(f"Loaded {len(rejected_df)} rejected to stg_rejects")
         return len(rejected_df)
     except Exception as e:
         conn.rollback()
-        print(f"Error Loading rejects: {e}")
+        logger.error(f"Error Loading rejects: {e}")
         raise
     finally:
         cursor.close()
         
 
-# TEST
-if __name__=="__main__": # pragma: no cover
-    import sys
-    import os
+# # TEST
+# if __name__=="__main__": # pragma: no cover
+#     import sys
+#     import os
     
-    sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
+#     sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
     
-    from readers.csv_read import read_csv
-    from clean import rename_columns, strip_whitespace, handle_missing_values, convert_date_format
-    from rules import apply_all_validations
+#     from readers.csv_read import read_csv
+#     from clean import rename_columns, strip_whitespace, handle_missing_values, convert_date_format
+#     from rules import apply_all_validations
     
-    DB_URL = "postgresql://postgres:password@localhost:5432/real_estate_db"
+#     DB_URL = "postgresql://postgres:password@localhost:5432/real_estate_db"
     
-    print("="*60)
-    print("FULL ETL PIPELIN EWITH DATABASE LOADING")
-    print("="*60)
-    
-    
-    print("\nStep 1: Reading and Cleaning Data...")
-    df = read_csv("data/real_estate.csv")
-    df = rename_columns(df)
-    df = strip_whitespace(df)
-    df = handle_missing_values(df)
-    df = convert_date_format(df)
+#     print("="*60)
+#     print("FULL ETL PIPELIN EWITH DATABASE LOADING")
+#     print("="*60)
     
     
-    print("\n Step 2: Validating Data...")
-    valid_df, rejected_df = apply_all_validations(df, primary_key='location_id')
+#     print("\nStep 1: Reading and Cleaning Data...")
+#     df = read_csv("data/real_estate.csv")
+#     df = rename_columns(df)
+#     df = strip_whitespace(df)
+#     df = handle_missing_values(df)
+#     df = convert_date_format(df)
     
-    print("\n Step 3: Connecting to Database...")
-    conn = get_db_connection(DB_URL)
     
-    print("\n Step 4: Creating Tables...")
-    create_tables(conn)
+#     print("\n Step 2: Validating Data...")
+#     valid_df, rejected_df = apply_all_validations(df, primary_key='location_id')
     
-    print("\n Step 5: Loading Valid Data...")
-    load_to_staging(conn, valid_df, 'stg_real_estate', 'location_id', batch_size=1000)
+#     print("\n Step 3: Connecting to Database...")
+#     conn = get_db_connection(DB_URL)
     
-    print("\n Step 6: Loading Rejected Data...")
-    load_rejected(conn, rejected_df, 'real_estate_csv')
+#     print("\n Step 4: Creating Tables...")
+#     create_tables(conn)
     
-    conn.close()
+#     print("\n Step 5: Loading Valid Data...")
+#     load_to_staging(conn, valid_df, 'stg_real_estate', 'location_id', batch_size=1000)
     
-    print("\n" + "="*60)
-    print("ETL PIPELINE COMPLETE!")
-    print("="*60)
-    print(f"Valid records loaded: {len(valid_df)}")
-    print(f"rejected records logged: {len(rejected_df)}")
+#     print("\n Step 6: Loading Rejected Data...")
+#     load_rejected(conn, rejected_df, 'real_estate_csv')
+    
+#     conn.close()
+    
+#     print("\n" + "="*60)
+#     print("ETL PIPELINE COMPLETE!")
+#     print("="*60)
+#     print(f"Valid records loaded: {len(valid_df)}")
+#     print(f"rejected records logged: {len(rejected_df)}")
     
     
     '''load.py

@@ -2,6 +2,9 @@
 # You'll build this step by step!
 
 import pandas as pd
+import sys 
+import os
+
 
 def read_csv(file_path): #LOAD CSV
     # read CSV file into a pandas DataFrame.

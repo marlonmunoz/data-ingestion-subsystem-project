@@ -3,7 +3,12 @@
 
 import pandas as pd
 import re
+import sys
+import os
 
+# Add parent directory to path for logs import
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
+from logs.utils import logger
 
 # Function 01
     # Makes names database-friendly(no dots/spaces)
@@ -30,7 +35,7 @@ def rename_columns(df):
         "location.address.state": "state",
         "location.address.zip": "zip_code",
     }
-    print(f"✅ Renamed all columns")
+    logger.info(f"✅ Renamed all columns")
     return df.rename(columns=column_mapping)
 
 
@@ -44,7 +49,7 @@ def strip_whitespace(df):
             # Remove spaces from ALL values in this column
             df[col] = df[col].str.strip()
             
-    print(f"✅ Stripped whitespace from string columns")
+    logger.info(f"✅ Stripped whitespace from string columns")
     return df
 
 
@@ -56,7 +61,7 @@ def handle_missing_values(df):
         # Replace the string "0" with None (Python's NULL)
         df['data_date'] = df['data_date'].replace('0', None)
         
-    print(f"✅ Handled missing values")
+    logger.info(f"✅ Handled missing values")
     return df
 
 # Function 03
@@ -70,113 +75,113 @@ def convert_date_format(df):
         
         null_count = df['data_date'].isna().sum()
         valid_count = df['data_date'].notna().sum()
-        print(f"✅ Coverted data_date format: {valid_count} valid, {null_count} null")
+        logger.info(f"✅ Coverted data_date format: {valid_count} valid, {null_count} null")
     return df
 
-if __name__=="__main__": # pragma: no cover
-    # Import the CSV reader
-    import sys
-    import os
+# if __name__=="__main__": # pragma: no cover
+#     # Import the CSV reader
+#     import sys
+#     import os
     
-    # Add parent directory to path so we can import from readers/
-    sys.path.insert(0, os.path.join(os.path.dirname(__file__),'..'))
+#     # Add parent directory to path so we can import from readers/
+#     sys.path.insert(0, os.path.join(os.path.dirname(__file__),'..'))
     
-    from readers.csv_read import read_csv
+#     from readers.csv_read import read_csv
     
-    # 1. Read the CSV
-    print("="*60)
-    print("STEP 1: Reading CSV")
-    print("="*60)
-    df = read_csv("data/real_estate.csv")
+#     # 1. Read the CSV
+#     print("="*60)
+#     print("STEP 1: Reading CSV")
+#     print("="*60)
+#     df = read_csv("data/real_estate.csv")
     
-    # 2. Show Original column names
-    print("\n" + "="*60)
-    print("ORIGINAL COLUMNS (Before cleaning)")
-    print("="*60)
-    print(list(df.columns))
+#     # 2. Show Original column names
+#     print("\n" + "="*60)
+#     print("ORIGINAL COLUMNS (Before cleaning)")
+#     print("="*60)
+#     print(list(df.columns))
     
-    # 3. Rename columns
-    print("\n" + "="*60)
-    print("STEP 2: Renaming Columns")
-    print("="*60)
-    df = rename_columns(df)
-    print("New Columns:", list(df.columns))
+#     # 3. Rename columns
+#     print("\n" + "="*60)
+#     print("STEP 2: Renaming Columns")
+#     print("="*60)
+#     df = rename_columns(df)
+#     print("New Columns:", list(df.columns))
     
-    # 4. Strip whitespace
-    print("\n" + "="*60)
-    print("STEP 3: Strippind Whitespace")
-    print("="*60)
-    df = strip_whitespace(df)
+#     # 4. Strip whitespace
+#     print("\n" + "="*60)
+#     print("STEP 3: Strippind Whitespace")
+#     print("="*60)
+#     df = strip_whitespace(df)
     
-    # 5. Handle missing values
-    print("\n" + "="*60)
-    print("STEP 4: Handling Missing Values")
-    print("="*60)
-    df = handle_missing_values(df)
+#     # 5. Handle missing values
+#     print("\n" + "="*60)
+#     print("STEP 4: Handling Missing Values")
+#     print("="*60)
+#     df = handle_missing_values(df)
     
-    # 6. Convert date format
-    print("\n" + "="*60)
-    print("STEP 5: Convert date format")
-    print("="*60)
-    df = convert_date_format(df)
+#     # 6. Convert date format
+#     print("\n" + "="*60)
+#     print("STEP 5: Convert date format")
+#     print("="*60)
+#     df = convert_date_format(df)
     
-    # 6 Show final cleaned data
-    print("\n" + "="*60)
-    print("STEP 1: FINAL CLEANED DATA - First 5 Rows:")
-    print("="*60)
-    print(df.head(15))
+#     # 6 Show final cleaned data
+#     print("\n" + "="*60)
+#     print("STEP 1: FINAL CLEANED DATA - First 5 Rows:")
+#     print("="*60)
+#     print(df.head(15))
     
-    print("\n" + "="*60)
-    print("COLUMN DATA TYPES")
-    print("="*60)
-    print(df.dtypes)
+#     print("\n" + "="*60)
+#     print("COLUMN DATA TYPES")
+#     print("="*60)
+#     print(df.dtypes)
     
-    print("\n" + "="*60)
-    print("SUMMARY")
-    print("="*60)
-    print(f"✅ Total rows: {len(df)}")
-    print(f"✅ Total columns: {len(df.columns)}")
-    print(f"✅ Null values in data_date: {df['data_date'].isna().sum()} ")
+#     print("\n" + "="*60)
+#     print("SUMMARY")
+#     print("="*60)
+#     print(f"✅ Total rows: {len(df)}")
+#     print(f"✅ Total columns: {len(df.columns)}")
+#     print(f"✅ Null values in data_date: {df['data_date'].isna().sum()} ")
     
-    # # INSPECT RAW DATA (Before any cleaning)
-    # pd.set_option('display.max_columns', None)
-    # pd.set_option('display.width', None)
-    # pd.set_option('display.max_colwidth', 50)
+#     # # INSPECT RAW DATA (Before any cleaning)
+#     # pd.set_option('display.max_columns', None)
+#     # pd.set_option('display.width', None)
+#     # pd.set_option('display.max_colwidth', 50)
     
-    # print("\n" + "="*80)
-    # print("RAW DATA - FIRST 50 ROWS (NO CLEANING YET):")
-    # print("="*80)
-    # print(df.head(50))
+#     # print("\n" + "="*80)
+#     # print("RAW DATA - FIRST 50 ROWS (NO CLEANING YET):")
+#     # print("="*80)
+#     # print(df.head(50))
     
-    # print("\n" + "="*80)
-    # print("RAW DATA - NULL VALUES PER COLUMN:")
-    # print("="*80)
-    # print(df.isnull().sum())
+#     # print("\n" + "="*80)
+#     # print("RAW DATA - NULL VALUES PER COLUMN:")
+#     # print("="*80)
+#     # print(df.isnull().sum())
     
-    # # Display ALL columns without truncation
-    # pd.set_option('display.max_columns', None)
-    # pd.set_option('display.width', None)
-    # pd.set_option('display.max_colwidth', 50)
+#     # # Display ALL columns without truncation
+#     # pd.set_option('display.max_columns', None)
+#     # pd.set_option('display.width', None)
+#     # pd.set_option('display.max_colwidth', 50)
     
-    # print("\n" + "="*80)
-    # print("FIRST 5 ROWS WITH ALL COLUMNS (FULL INSPECTION):")
-    # print("="*80)
-    # print(df.head(50))
+#     # print("\n" + "="*80)
+#     # print("FIRST 5 ROWS WITH ALL COLUMNS (FULL INSPECTION):")
+#     # print("="*80)
+#     # print(df.head(50))
     
     
-    # Check for any remaining data quality issues
-    print("\n" + "="*80)
-    print("DATA QUALITY CHECK:")
-    print("="*80)
-    print(f"Total NULL values per column:")
-    print(df.isnull().sum())
+#     # Check for any remaining data quality issues
+#     print("\n" + "="*80)
+#     print("DATA QUALITY CHECK:")
+#     print("="*80)
+#     print(f"Total NULL values per column:")
+#     print(df.isnull().sum())
     
-    print("\n" + "="*80)
-    print("UNIQUE VALUES IN KEY COLUMNS:")
-    print("="*80)
-    print(f"Unique statuses: {df['status'].unique()}")
-    print(f"Unique ownership types: {df['ownership_type'].unique()}")
-    print(f"Unique states: {df['state'].unique()}")
+#     print("\n" + "="*80)
+#     print("UNIQUE VALUES IN KEY COLUMNS:")
+#     print("="*80)
+#     print(f"Unique statuses: {df['status'].unique()}")
+#     print(f"Unique ownership types: {df['ownership_type'].unique()}")
+#     print(f"Unique states: {df['state'].unique()}")
     
     
 '''clean.py transforms messy CSV column names into clean 
