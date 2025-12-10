@@ -13,7 +13,7 @@ import sys
 import os # needed to check if config file exists before tryin to open it
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
-from logs.utils import logger
+from utils import logger
 
 def load_config(config_path="config/sources.json"):
     if not os.path.exists(config_path): # here we're checking weather the file exist at that path

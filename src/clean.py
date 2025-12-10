@@ -8,7 +8,7 @@ import os
 
 # Add parent directory to path for logs import
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
-from logs.utils import logger
+from utils import logger
 
 # Function 01
     # Makes names database-friendly(no dots/spaces)

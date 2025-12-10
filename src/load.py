@@ -9,7 +9,7 @@ import sys
 import os
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
-from logs.utils import logger
+from utils import logger
 
 # Function 01: Create the database schema
 def create_tables(conn):

@@ -6,7 +6,7 @@ import sys
 import os
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', '..'))
-from logs.utils import logger
+from utils import logger
 
 
 def read_csv(file_path): #LOAD CSV

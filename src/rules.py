@@ -11,7 +11,7 @@ import sys
 import os
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
-from logs.utils import logger
+from utils import logger
 from validate import validate_required_fields, validate_numeric_ranges, validate_null_values, remove_duplicates
 
 
