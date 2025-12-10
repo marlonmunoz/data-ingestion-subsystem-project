@@ -9,8 +9,11 @@ we can change settings without modifying the code itlsef.
 '''
 
 import json # needed to convert JSON into Python Dictionary
+import sys
 import os # needed to check if config file exists before tryin to open it
 
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
+from logs.utils import logger
 
 def load_config(config_path="config/sources.json"):
     if not os.path.exists(config_path): # here we're checking weather the file exist at that path
@@ -24,10 +27,10 @@ def load_config(config_path="config/sources.json"):
 
 if __name__=="__main__":
     config = load_config()
-    print("Config loaded successfulkly!")
-    print(f"Database URL: {config['defaults']['db_url']}")
-    print(f"Number of sources: {len(config['sources'])}")
-    print(f"Source name: {config['sources'][0]['name']}")
+    logger.info("Config loaded successfulkly!")
+    logger.info(f"Database URL: {config['defaults']['db_url']}")
+    logger.info(f"Number of sources: {len(config['sources'])}")
+    logger.info(f"Source name: {config['sources'][0]['name']}")
 
 
 '''loads the JSON configuration file and returns it as a Python 
