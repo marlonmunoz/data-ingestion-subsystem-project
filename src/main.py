@@ -1,16 +1,15 @@
 # main.py - The main pipeline
 # You'll build this step by step!
 
-import sys
-import os
 from readers.csv_read import read_csv
 from clean import rename_columns, strip_whitespace, handle_missing_values, convert_date_format
 from rules import apply_all_validations
 from load import get_db_connection, create_tables, load_to_staging, load_rejected
 from config import load_config
+import sys
+import os
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
 from logs.utils import logger
-
 
 def run_pipeline(config_path="config/sources.json"):
     try: 
