@@ -73,7 +73,44 @@ def validate_numeric_ranges(df):
     return valid_df, all_rejects
 
 
-# Helper Function 03
+# Function 03: Validate NULL values in important columns
+def validate_null_values(df):
+    # Start with all rows as valid
+    valid_mask = pd.Series([True] * len(df), index=df.index)
+    all_rejects = pd.DataFrame()
+    
+    # Define columns where NULL values should be rejected
+    # You can customize this list based on your business rules
+    critical_columns = [
+        'data_date',        # Date field - required for time-based analysis
+        'ownership_type',
+        'property_type', 
+        'zip_code',
+        'address_line1'
+    ]
+    
+    # Check each critical column for NULL values
+    for col in critical_columns:
+        if col in df.columns:
+            # Find rows with NULL values in this column
+            invalid_mask = df[col].isna()
+            if invalid_mask.any():
+                # Get only the rows that are still valid and have NULL in this column
+                rejects = df[invalid_mask & valid_mask].copy()
+                rejects['rejection_reason'] = f'NULL value in {col}'
+                all_rejects = pd.concat([all_rejects, rejects], ignore_index=True)
+                # Mark these rows as invalid
+                valid_mask = valid_mask & ~invalid_mask
+    
+    # Split into valid and invalid
+    valid_df = df[valid_mask].copy()
+    
+    logger.info(f"✅ NULL value validation: {len(valid_df)} valid, {len(all_rejects)} rejected")
+    
+    return valid_df, all_rejects
+
+
+# Helper Function 04
 def remove_duplicates(df, primary_key):
     original_count = len(df)
     df = df.drop_duplicates(subset=[primary_key], keep='first')

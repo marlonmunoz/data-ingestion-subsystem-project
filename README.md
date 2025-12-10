@@ -486,3 +486,29 @@ By completing this project, we will gain a full picture of how **raw data become
 
 #### Run and stop at first failure
 `pytest -x`
+
+---
+
+## 🔧 Troubleshooting
+
+### Connection Pool Timeout Error
+
+If you see this error:
+```
+pgsql: Failed to expand node: Timeout getting connection from pool. 
+pool size: 10, max: 10, active tx: 0
+```
+
+**Cause:** Too many idle connections from DBeaver, VS Code PostgreSQL extension, or other database clients are holding connection pool slots.
+
+**Solution:** Run the fix script:
+```bash
+python scripts/fix_connection_pool.py
+```
+
+This will terminate idle connections and free up the pool. 
+
+**Prevention:**
+- Close DBeaver connections when not in use
+- Disconnect VS Code PostgreSQL extension when done querying
+- Ensure your code properly closes database connections with `conn.close()`

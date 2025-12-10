@@ -12,7 +12,7 @@ import os
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
 from logs.utils import logger
-from validate import validate_required_fields, validate_numeric_ranges, remove_duplicates
+from validate import validate_required_fields, validate_numeric_ranges, validate_null_values, remove_duplicates
 
 
 # MASTER FUNCTION 
@@ -40,7 +40,14 @@ def apply_all_validations(df, primary_key='location_id'):
         all_rejects = pd.concat([all_rejects, rejects_numeric], ignore_index=True)
     
     
-    # Step 03: Remove duplicates (only from vslid data)
+    # Step 03: Validate NULL values in critical columns
+    logger.info("\n Validating NULL values...")
+    valid_df, rejects_nulls = validate_null_values(valid_df)
+    if len(rejects_nulls) > 0:
+        all_rejects = pd.concat([all_rejects, rejects_nulls], ignore_index=True)
+    
+    
+    # Step 04: Remove duplicates (only from valid data)
     logger.info("\n Removing Duplicates...")
     valid_df = remove_duplicates(valid_df, primary_key)
     
