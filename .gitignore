@@ -32,5 +32,8 @@ htmlcov/
 *.log
 logs/
 
+#mds
+.PROJECT_WALKTHROUGH.md
+
 # Data files (optional - uncomment if sensitive)
 # data/*.csv

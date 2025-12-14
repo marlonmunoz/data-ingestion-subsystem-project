@@ -188,54 +188,54 @@ def load_rejected(conn, rejected_df, source_name):
         cursor.close()
         
 
-# # TEST
-# if __name__=="__main__": # pragma: no cover
-#     import sys
-#     import os
+# TEST
+if __name__=="__main__": # pragma: no cover
+    import sys
+    import os
     
-#     sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
+    sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
     
-#     from readers.csv_read import read_csv
-#     from clean import rename_columns, strip_whitespace, handle_missing_values, convert_date_format
-#     from rules import apply_all_validations
+    from readers.csv_read import read_csv
+    from clean import rename_columns, strip_whitespace, handle_missing_values, convert_date_format
+    from rules import apply_all_validations
     
-#     DB_URL = "postgresql://postgres:password@localhost:5432/real_estate_db"
+    DB_URL = "postgresql://postgres:password@localhost:5432/real_estate_db"
     
-#     print("="*60)
-#     print("FULL ETL PIPELIN EWITH DATABASE LOADING")
-#     print("="*60)
-    
-    
-#     print("\nStep 1: Reading and Cleaning Data...")
-#     df = read_csv("data/real_estate.csv")
-#     df = rename_columns(df)
-#     df = strip_whitespace(df)
-#     df = handle_missing_values(df)
-#     df = convert_date_format(df)
+    print("="*60)
+    print("FULL ETL PIPELIN EWITH DATABASE LOADING")
+    print("="*60)
     
     
-#     print("\n Step 2: Validating Data...")
-#     valid_df, rejected_df = apply_all_validations(df, primary_key='location_id')
+    print("\nStep 1: Reading and Cleaning Data...")
+    df = read_csv("data/real_estate.csv")
+    df = rename_columns(df)
+    df = strip_whitespace(df)
+    df = handle_missing_values(df)
+    df = convert_date_format(df)
     
-#     print("\n Step 3: Connecting to Database...")
-#     conn = get_db_connection(DB_URL)
     
-#     print("\n Step 4: Creating Tables...")
-#     create_tables(conn)
+    print("\n Step 2: Validating Data...")
+    valid_df, rejected_df = apply_all_validations(df, primary_key='location_id')
     
-#     print("\n Step 5: Loading Valid Data...")
-#     load_to_staging(conn, valid_df, 'stg_real_estate', 'location_id', batch_size=1000)
+    print("\n Step 3: Connecting to Database...")
+    conn = get_db_connection(DB_URL)
     
-#     print("\n Step 6: Loading Rejected Data...")
-#     load_rejected(conn, rejected_df, 'real_estate_csv')
+    print("\n Step 4: Creating Tables...")
+    create_tables(conn)
     
-#     conn.close()
+    print("\n Step 5: Loading Valid Data...")
+    load_to_staging(conn, valid_df, 'stg_real_estate', 'location_id', batch_size=1000)
     
-#     print("\n" + "="*60)
-#     print("ETL PIPELINE COMPLETE!")
-#     print("="*60)
-#     print(f"Valid records loaded: {len(valid_df)}")
-#     print(f"rejected records logged: {len(rejected_df)}")
+    print("\n Step 6: Loading Rejected Data...")
+    load_rejected(conn, rejected_df, 'real_estate_csv')
+    
+    conn.close()
+    
+    print("\n" + "="*60)
+    print("ETL PIPELINE COMPLETE!")
+    print("="*60)
+    print(f"Valid records loaded: {len(valid_df)}")
+    print(f"rejected records logged: {len(rejected_df)}")
     
     
     '''load.py

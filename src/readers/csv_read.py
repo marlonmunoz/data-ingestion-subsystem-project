@@ -1,11 +1,13 @@
 # csv_read.py - Functions to read data from different sources
 # You'll build this step by step!
+#  python3 src/readers/csv_read.py
 
 import pandas as pd
 import sys 
 import os
 
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', '..'))
+# Add parent directory to path to import from src/
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
 from utils import logger
 
 
@@ -14,37 +16,37 @@ def read_csv(file_path): #LOAD CSV
     df = pd.read_csv(file_path)
     
     logger.info("\n" + "="*50)
-    logger.info(f"Loaded {len(df)} rows from {file_path}") #COUNT ROWS
+    logger.info(f"Loaded ======> {len(df)} rows from {file_path}") #COUNT ROWS
     logger.info("="*50)
     logger.info("\n" + "="*50)
-    logger.info(f"Columns: {list(df.columns)}") #GET COLUMNS NAMES
+    logger.info(f"Columns =======> {list(df.columns)}") #GET COLUMNS NAMES
     logger.info("="*50)
     logger.info("\n" + "="*50)
-    logger.info(f"Shape: {df.shape}") #(ROES, COLUMNS) TUPLE
+    logger.info(f"Shape =======>  {df.shape}") #(ROWS, COLUMNS) TUPLE
     logger.info("="*50)
     return df
 
-# if __name__=="__main__":
-#     # Test the function
-#     df = read_csv("data/real_estate.csv")
-#     print("\n" + "="*50)
-#     print("FIRST 3 ROWS:")
-#     print("="*50)
-#     print(df.head(3)) # Shows the first 3 rows
-#     print("\n" + "="*50)
-#     print("NUMBER OF ROWS")
-#     print("="*50)
-#     print(len(df)) # Number of rows
+if __name__=="__main__": # pragnma: no cover
+    # Test the function
+    df = read_csv("data/real_estate.csv")
+    print("\n" + "="*50)
+    print("FIRST 3 ROWS:")
+    print("="*50)
+    print(df.head(3)) # Shows the first 3 rows
+    print("\n" + "="*50)
+    print("NUMBER OF ROWS")
+    print("="*50)
+    print(len(df)) # Number of rows
     
-#     print("\n" + "="*50)
-#     print("DATA TYPES:")
-#     print("="*50)
-#     print(df.dtypes) # Shows data type of each columns
+    print("\n" + "="*50)
+    print("DATA TYPES:")
+    print("="*50)
+    print(df.dtypes) # Shows data type of each columns
     
-#     print("\n" + "="*50)
-#     print("BASIC INFO:")
-#     print("="*50)
-#     print(df.info()) # Summary: columns, types, nulls
+    print("\n" + "="*50)
+    print("BASIC INFO:")
+    print("="*50)
+    print(df.info()) # Summary: columns, types, nulls
     
     
 '''   Data Exploration Pattern

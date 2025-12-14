@@ -122,68 +122,68 @@ def remove_duplicates(df, primary_key):
     return df
 
 
-# # TEST
-# if __name__=="__main__": # pragma: no cover
-#     import sys
-#     import os
+# TEST
+if __name__=="__main__": # pragma: no cover
+    import sys
+    import os
     
-#     # Add parent directory
-#     sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
+    # Add parent directory
+    sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
     
-#     from readers.csv_read import read_csv
-#     from clean import rename_columns, strip_whitespace, handle_missing_values
+    from readers.csv_read import read_csv
+    from clean import rename_columns, strip_whitespace, handle_missing_values
     
-#     # Pipeline: Read → Clean → Validate
-#     print("="*60)
-#     print("STEP 1: Read and Clean Data")
-#     print("="*60)
-#     df = read_csv("data/real_estate.csv")
-#     df = rename_columns(df)
-#     df = strip_whitespace(df)
-#     df = handle_missing_values(df)
+    # Pipeline: Read → Clean → Validate
+    print("="*60)
+    print("STEP 1: Read and Clean Data")
+    print("="*60)
+    df = read_csv("data/real_estate.csv")
+    df = rename_columns(df)
+    df = strip_whitespace(df)
+    df = handle_missing_values(df)
     
-#     print(f"\nStarting with: {len(df)} rows")
+    print(f"\nStarting with: {len(df)} rows")
     
-#     # Validate required fields
-#     print("\n" + "="*60)
-#     print("STEP 2: Validate Required Fields")
-#     print("="*60)
-#     valid_df, rejects_required = validate_required_fields(df)
+    # Validate required fields
+    print("\n" + "="*60)
+    print("STEP 2: Validate Required Fields")
+    print("="*60)
+    valid_df, rejects_required = validate_required_fields(df)
     
     
-#     # Validate numeric ranges
-#     print("\n" + "="*60)
-#     print("STEP 2: Validate Numeric Ranges")
-#     print("="*60)
-#     valid_df, rejects_numeric = validate_numeric_ranges(valid_df)
+    # Validate numeric ranges
+    print("\n" + "="*60)
+    print("STEP 2: Validate Numeric Ranges")
+    print("="*60)
+    valid_df, rejects_numeric = validate_numeric_ranges(valid_df)
     
-#     # Remove duplicates
-#     print("\n" + "="*60)
-#     print("STEP 4: Remove Duplicates")
-#     print("="*60)
-#     valid_df = remove_duplicates(valid_df, 'location_id')
+    # Remove duplicates
+    print("\n" + "="*60)
+    print("STEP 4: Remove Duplicates")
+    print("="*60)
+    valid_df = remove_duplicates(valid_df, 'location_id')
     
-#     # Combine all rejects
-#     all_rejects = pd.concat([rejects_required, rejects_numeric], ignore_index=True)
+    # Combine all rejects
+    all_rejects = pd.concat([rejects_required, rejects_numeric], ignore_index=True)
     
-#     # Summary
-#     print("\n" + "="*60)
-#     print("VALIDATION SUMMARY")
-#     print("="*60)
-#     print(f"✅ Valid records: {len(valid_df)}")
-#     print(f"❌ Rejected records: {len(all_rejects)}")
-#     print(f"📊 Success rate: {len(valid_df) / len(df) * 100:1f}%")
+    # Summary
+    print("\n" + "="*60)
+    print("VALIDATION SUMMARY")
+    print("="*60)
+    print(f"✅ Valid records: {len(valid_df)}")
+    print(f"❌ Rejected records: {len(all_rejects)}")
+    print(f"📊 Success rate: {len(valid_df) / len(df) * 100:1f}%")
     
-#     if len(all_rejects) > 0:
-#         print("\n"+"="*60)
-#         print("REJECTION REASONS:")
-#         print("="*60)
-#         print(all_rejects['rejection_reason'].value_counts())
+    if len(all_rejects) > 0:
+        print("\n"+"="*60)
+        print("REJECTION REASONS:")
+        print("="*60)
+        print(all_rejects['rejection_reason'].value_counts())
         
-#         print("\n"+"="*60)
-#         print("SAMPLE REHJECTED RECORDS:")
-#         print("="*60)
-#         print(all_rejects[['location_id', 'city', 'state', 'rejection_reason']].head(5))
+        print("\n"+"="*60)
+        print("SAMPLE REHJECTED RECORDS:")
+        print("="*60)
+        print(all_rejects[['location_id', 'city', 'state', 'rejection_reason']].head(5))
     
     
     
